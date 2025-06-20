@@ -7,7 +7,14 @@ import { api } from "@/convex/_generated/api";
 import { useAuth } from "@clerk/clerk-expo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useQuery } from "convex/react";
-import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { styles } from "../../styles/feed.styles";
 
 export default function Index() {
@@ -38,32 +45,35 @@ export default function Index() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView
+      <FlatList
+        data={posts}
+        renderItem={({ item }) => (
+          <Post post={{ ...item, caption: item.caption ?? "" }} />
+        )}
+        keyExtractor={(item) => item._id}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 60 }}
-      >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={true}
-          style={styles.storiesContainer}
-        >
-          {mockUsers.map((story) => (
-            <Story key={story.id} story={story} />
-          ))}
-        </ScrollView>
-
-        {posts.map((post) => (
-          <Post
-            key={post._id}
-            post={{ ...post, caption: post.caption ?? "" }}
-          />
-        ))}
-      </ScrollView>
+        ListHeaderComponent={<StoriesSection />}
+      />
     </View>
   );
 }
 
-export const NoPostFound = () => {
+const StoriesSection = () => {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={true}
+      style={styles.storiesContainer}
+    >
+      {mockUsers.map((story) => (
+        <Story key={story.id} story={story} />
+      ))}
+    </ScrollView>
+  );
+};
+
+const NoPostFound = () => {
   return (
     <View
       style={{
