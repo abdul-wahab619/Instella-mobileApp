@@ -86,6 +86,8 @@ const Create = () => {
       const post = await createPost({ storageId, caption });
       // Redirect
       router.push("/(tabs)");
+      setSelectedImage(null);
+      setCaption("");
     } catch (error) {
       console.error("❌ Error during handleShare:", error);
     } finally {

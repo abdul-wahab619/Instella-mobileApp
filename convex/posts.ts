@@ -123,3 +123,55 @@ export const toggleLike = mutation({
     }
   },
 });
+
+export const deletePost = mutation({
+  args: { postId: v.id("posts") },
+  handler: async (ctx, args) => {
+    const currentUser = await getAuthenticatedUser(ctx);
+    const post = await ctx.db.get(args.postId);
+    if (!post) throw new Error("Post not found");
+
+    //verify ownership
+    if (post.userId !== currentUser._id) {
+      throw new Error("You can only delete your own posts");
+    }
+
+    const likes = await ctx.db
+      .query("likes")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+
+    for (const like of likes) {
+      await ctx.db.delete(like._id);
+    }
+
+    //deleted associated comments
+    const comments = await ctx.db
+      .query("comments")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+    for (const comment of comments) {
+      await ctx.db.delete(comment._id);
+    }
+
+    //delete associated bookmarks
+    const bookmarks = await ctx.db
+      .query("bookmarks")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+    for (const bookmark of bookmarks) {
+      await ctx.db.delete(bookmark._id);
+    }
+
+    //delete the post
+    await ctx.storage.delete(post.storageId);
+
+    await ctx.db.delete(args.postId);
+
+    // Update user's posts count
+    await ctx.db.patch(currentUser._id, {
+      posts: Math.max(0, currentUser.posts || 1) - 1,
+    });
+    return true;
+  },
+});
