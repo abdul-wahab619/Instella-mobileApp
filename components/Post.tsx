@@ -4,16 +4,19 @@ import { Id } from "@/convex/_generated/dataModel";
 import { styles } from "@/styles/feed.styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useMutation } from "convex/react";
+import { formatDistanceToNow } from "date-fns";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import CommentsModal from "./CommentsModal";
 
 type PostProps = {
   post: {
     _id: Id<"posts">;
     imageUrl: string;
     caption: string;
+    comments: number;
     likes: number;
     _creationTime: number;
     isLiked: boolean;
@@ -29,6 +32,8 @@ type PostProps = {
 export default function Post({ post }: PostProps) {
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likesCount, setLikesCount] = useState(post.likes);
+  const [commentsCount, setCommentsCount] = useState(post.comments);
+  const [showComments, setShowComments] = useState(false);
 
   const toggleLike = useMutation(api.posts.toggleLike);
   const handleLike = async () => {
@@ -47,7 +52,7 @@ export default function Post({ post }: PostProps) {
       {/* POST HEADER */}
 
       <View style={styles.postHeader}>
-        <Link href={"/(tabs)/notifications"}>
+        <Link href={"/(tabs)/notifications"} asChild>
           <TouchableOpacity style={styles.postHeaderLeft}>
             <Image
               source={post.author.image}
@@ -56,9 +61,10 @@ export default function Post({ post }: PostProps) {
               transition={200}
               cachePolicy="memory-disk"
             />
-            <Text style={styles.postUsername}> {post.author.username}</Text>
+            <Text style={styles.postUsername}>{post.author.username}</Text>
           </TouchableOpacity>
         </Link>
+
         {/* <TouchableOpacity>
           <Ionicons name="ellipsis-horizontal" size={20} color={COLORS.white} />
         </TouchableOpacity> */}
@@ -90,7 +96,7 @@ export default function Post({ post }: PostProps) {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowComments(true)}>
             <Ionicons
               name="chatbubble-outline"
               size={24}
@@ -118,12 +124,28 @@ export default function Post({ post }: PostProps) {
             <Text style={styles.captionText}>{post.caption}</Text>
           </View>
         )}
-        <TouchableOpacity>
-          <Text style={styles.commentsText}>View all 2 comments</Text>
-        </TouchableOpacity>
+        {commentsCount > 0 && (
+          <TouchableOpacity onPress={() => setShowComments(true)}>
+            <Text style={styles.commentsText}>
+              View all {commentsCount} comments
+            </Text>
+          </TouchableOpacity>
+        )}
 
-        <Text style={styles.timeAgo}>2 hours ago</Text>
+        <Text style={styles.timeAgo}>
+          {" "}
+          {formatDistanceToNow(post._creationTime, {
+            addSuffix: true,
+          })}
+        </Text>
       </View>
+
+      <CommentsModal
+        postId={post._id}
+        visible={showComments}
+        onClose={() => setShowComments(false)}
+        onCommentAdded={() => setCommentsCount((prev) => prev + 1)}
+      />
     </View>
   );
 }

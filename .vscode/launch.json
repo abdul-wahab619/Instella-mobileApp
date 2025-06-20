@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run expo on port 8082 (no dev-client)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["expo", "start", "--port", "8082"],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

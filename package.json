@@ -18,12 +18,15 @@
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
     "convex": "^1.24.8",
+    "date-fns": "^4.1.0",
     "expo": "~53.0.11",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.6",
+    "expo-file-system": "~18.1.10",
     "expo-font": "~13.3.1",
     "expo-haptics": "~14.1.4",
     "expo-image": "~2.3.0",
+    "expo-image-picker": "~16.1.4",
     "expo-linking": "~7.1.5",
     "expo-router": "~5.1.0",
     "expo-secure-store": "^14.2.3",
@@ -41,9 +44,7 @@
     "react-native-screens": "~4.11.1",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
-    "svix": "^1.67.0",
-    "expo-image-picker": "~16.1.4",
-    "expo-file-system": "~18.1.10"
+    "svix": "^1.67.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
