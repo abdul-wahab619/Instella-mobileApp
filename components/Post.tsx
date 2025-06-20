@@ -31,11 +31,23 @@ type PostProps = {
 
 export default function Post({ post }: PostProps) {
   const [isLiked, setIsLiked] = useState(post.isLiked);
+  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
   const [likesCount, setLikesCount] = useState(post.likes);
   const [commentsCount, setCommentsCount] = useState(post.comments);
   const [showComments, setShowComments] = useState(false);
 
   const toggleLike = useMutation(api.posts.toggleLike);
+  const toggleBookmark = useMutation(api.bookmarks.toggleBookmark);
+
+  const handleBookmark = async () => {
+    try {
+      const newIsBookmarked = await toggleBookmark({ postId: post._id });
+      setIsBookmarked(newIsBookmarked);
+    } catch (error) {
+      console.error("Error toggling bookmark", error);
+    }
+  };
+
   const handleLike = async () => {
     try {
       const newIsLiked = await toggleLike({ postId: post._id });
@@ -104,8 +116,12 @@ export default function Post({ post }: PostProps) {
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
-          <Ionicons name="bookmark-outline" size={24} color={COLORS.white} />
+        <TouchableOpacity onPress={handleBookmark}>
+          <Ionicons
+            name={isBookmarked ? "bookmark" : "bookmark-outline"}
+            size={24}
+            color={COLORS.white}
+          />
         </TouchableOpacity>
       </View>
 
