@@ -33,7 +33,7 @@ function NotificationItem({ notification }: any) {
         </Link>
 
         <View style={styles.notificationInfo}>
-          <Link href={`/users/${notification.sender._id}`} asChild>
+          <Link href={`/user/${notification.sender._id}`} asChild>
             <TouchableOpacity>
               <Text style={styles.username}>
                 {notification.sender.username}

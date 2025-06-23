@@ -6,14 +6,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useMutation, useQuery } from "convex/react";
 import React from "react";
 import {
-    FlatList,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  FlatList,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Comment from "./Comment";
 import Loader from "./Loader";
@@ -22,14 +22,12 @@ type CommentsModalProps = {
   postId: Id<"posts">;
   visible: boolean;
   onClose: () => void;
-  onCommentAdded: () => void;
 };
 
 export default function CommentsModal({
   onClose,
   postId,
   visible,
-  onCommentAdded,
 }: CommentsModalProps) {
   const [newComment, setNewComment] = React.useState("");
   const comments = useQuery(api.comments.getComments, { postId });
@@ -39,7 +37,6 @@ export default function CommentsModal({
     try {
       await addComment({ content: newComment, postId });
       setNewComment("");
-      onCommentAdded();
     } catch (error) {
       console.error("Error adding comment:", error);
     }
