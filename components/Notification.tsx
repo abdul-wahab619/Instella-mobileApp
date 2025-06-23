@@ -11,7 +11,7 @@ function NotificationItem({ notification }: any) {
   return (
     <View style={styles.notificationItem}>
       <View style={styles.notificationContent}>
-        <Link href={`/notificatios`}>
+        <Link href={`/user/${notification.sender._id}`} asChild>
           <TouchableOpacity style={styles.avatarContainer}>
             <Image
               source={{ uri: notification.sender.profilePicture }}
